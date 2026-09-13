@@ -16,6 +16,41 @@
   <link rel="stylesheet" href="./birthday.css" />
 </head>
 <body>
+  <!-- ============================================================
+       PRE-SHOW GATE — a little tease before the gift itself: fake
+       loading, a fake glitch, then a quick 3-question quiz only she
+       can pass. Fully covers the screen so nothing behind it is
+       visible until she gets through. Customize questions + the
+       secret message + wrong-answer lines at the top of gate.js.
+       ============================================================ -->
+  <div class="gate" id="gate" role="dialog" aria-modal="true" aria-label="One moment">
+    <div class="gate__panel" id="gatePanel">
+
+      <!-- phase 1: fake loading -->
+      <div class="gate__phase" id="gateLoading">
+        <div class="gate__spinner" aria-hidden="true"></div>
+        <p class="gate__msg" id="gateLoadingMsg">loading your gift&hellip;</p>
+        <div class="gate__bar" aria-hidden="true"><div class="gate__barFill" id="gateBarFill"></div></div>
+      </div>
+
+      <!-- phase 2: fake error / glitch -->
+      <div class="gate__phase" id="gateError" hidden>
+        <p class="gate__errIcon" aria-hidden="true">⚠️</p>
+        <p class="gate__msg gate__msg--err" id="gateErrMsg">uh oh&hellip; something broke</p>
+      </div>
+
+      <!-- phase 3: the quiz -->
+      <div class="gate__phase" id="gateQuiz" hidden>
+        <p class="gate__eyebrow">just kidding 😏 — answer this first</p>
+        <p class="gate__question" id="gateQuestion">Question</p>
+        <div class="gate__options" id="gateOptions"></div>
+        <p class="gate__feedback" id="gateFeedback" aria-live="polite"></p>
+        <p class="gate__progress" id="gateProgress"></p>
+      </div>
+
+    </div>
+  </div>
+
   <main class="scene">
 
     <!-- The tree world (Act 4). One canvas; it stays transparent until the
@@ -221,6 +256,24 @@
   <!-- Accessible equivalent for reduced-motion + screen readers. -->
   <p class="sr-only">Happy Birthday. Here&rsquo;s to a wonderful year ahead.</p>
 
+  <!-- Secret floating heart — tap it a few times to find a hidden note.
+       Customize SECRET_MESSAGE and SECRET_TAPS_NEEDED in gate.js. -->
+  <button class="secretHeart" id="secretHeart" type="button" aria-label="A little secret">💗</button>
+  <div class="secretModal" id="secretModal" hidden>
+    <div class="secretModal__card">
+      <button class="secretModal__close" id="secretModalClose" type="button" aria-label="Close">✕</button>
+      <p class="secretModal__title">psst&hellip; 🤫</p>
+      <p class="secretModal__text" id="secretModalText"></p>
+    </div>
+  </div>
+
+  <!-- Background music. No src is set here on purpose (see gate.js) so a
+       build never fails if the file is missing — it just won't play until
+       you drop an mp3 at public/audio/bday-song.mp3. -->
+  <audio id="bgMusic" loop preload="none"></audio>
+  <button class="muteBtn" id="muteBtn" type="button" aria-label="Mute music" hidden>🔊</button>
+
+  <script type="module" src="./gate.js"></script>
   <script type="module" src="./birthday.js"></script>
 </body>
 </html>

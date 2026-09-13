@@ -129,7 +129,7 @@ function runLoadingPrank() {
         showPhase(gatePage2);
         shakePanel();
         startQuiz();
-      }, 500);
+      }, 3000);
     }
   }, 140);
 }

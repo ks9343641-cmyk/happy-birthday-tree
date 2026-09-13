@@ -17,35 +17,44 @@
 </head>
 <body>
   <!-- ============================================================
-       PRE-SHOW GATE — a little tease before the gift itself: fake
-       loading, a fake glitch, then a quick 3-question quiz only she
-       can pass. Fully covers the screen so nothing behind it is
-       visible until she gets through. Customize questions + the
-       secret message + wrong-answer lines at the top of gate.js.
+       PRE-SHOW GATE — a little tease before the gift itself: a big
+       loader with a live percentage, a fake glitch, then a 3-question
+       quiz only she can pass (with a name sub-question hidden inside
+       Q3). Fully covers the screen until she gets through. Customize
+       everything at the top of gate.js.
        ============================================================ -->
   <div class="gate" id="gate" role="dialog" aria-modal="true" aria-label="One moment">
     <div class="gate__panel" id="gatePanel">
 
-      <!-- phase 1: fake loading -->
+      <!-- phase 1: big loader + live percentage -->
       <div class="gate__phase" id="gateLoading">
-        <div class="gate__spinner" aria-hidden="true"></div>
+        <div class="gate__spinner gate__spinner--big" aria-hidden="true"></div>
+        <p class="gate__percent" id="gatePercent">0%</p>
         <p class="gate__msg" id="gateLoadingMsg">loading your gift&hellip;</p>
-        <div class="gate__bar" aria-hidden="true"><div class="gate__barFill" id="gateBarFill"></div></div>
       </div>
 
-      <!-- phase 2: fake error / glitch -->
-      <div class="gate__phase" id="gateError" hidden>
-        <p class="gate__errIcon" aria-hidden="true">⚠️</p>
-        <p class="gate__msg gate__msg--err" id="gateErrMsg">uh oh&hellip; something broke</p>
-      </div>
+      <!-- phase 2: the glitch reveal + the quiz, all on one page -->
+      <div class="gate__phase" id="gatePage2" hidden>
+        <p class="gate__bigErr" id="gateErrBig">uh oh&hellip; something broke</p>
+        <p class="gate__bigKid" id="gateKidBig">just kidding 😏 — answer this first</p>
+        <p class="gate__quizLabel">Quiz Time 🎯</p>
 
-      <!-- phase 3: the quiz -->
-      <div class="gate__phase" id="gateQuiz" hidden>
-        <p class="gate__eyebrow">just kidding 😏 — answer this first</p>
-        <p class="gate__question" id="gateQuestion">Question</p>
-        <div class="gate__options" id="gateOptions"></div>
-        <p class="gate__feedback" id="gateFeedback" aria-live="polite"></p>
-        <p class="gate__progress" id="gateProgress"></p>
+        <!-- multiple-choice question -->
+        <div id="gateQuizBlock">
+          <p class="gate__question" id="gateQuestion">Question</p>
+          <div class="gate__options" id="gateOptions"></div>
+          <p class="gate__feedback" id="gateFeedback" aria-live="polite"></p>
+          <p class="gate__progress" id="gateProgress"></p>
+        </div>
+
+        <!-- hidden name sub-question, revealed after Q3's correct answer -->
+        <div id="gateNameBlock" hidden>
+          <p class="gate__question" id="gateSubQ">What was the first name I gave you??</p>
+          <input class="gate__nameInput" id="gateNameInput" type="text" autocomplete="off"
+                 placeholder="type it here" aria-label="Your answer" />
+          <button class="gate__opt gate__nameSubmit" id="gateNameSubmit" type="button">Submit</button>
+          <p class="gate__feedback" id="gateNameFeedback" aria-live="polite"></p>
+        </div>
       </div>
 
     </div>

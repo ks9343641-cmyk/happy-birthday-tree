@@ -35,8 +35,7 @@
 
       <!-- phase 2: the glitch reveal + the quiz, all on one page -->
       <div class="gate__phase" id="gatePage2" hidden>
-        <p class="gate__bigErr" id="gateErrBig">uh oh&hellip; something broke</p>
-        <p class="gate__bigKid" id="gateKidBig">just kidding 😏 — answer this first</p>
+        <p class="gate__bigErr" id="gateErrBig">Uh oh&hellip; Kartik said no gift for you until you answer a few questions first 😏🎁</p>
         <p class="gate__quizLabel">Quiz Time 🎯</p>
 
         <!-- multiple-choice question -->
@@ -55,8 +54,34 @@
           <button class="gate__opt gate__nameSubmit" id="gateNameSubmit" type="button">Submit</button>
           <p class="gate__feedback" id="gateNameFeedback" aria-live="polite"></p>
         </div>
+
+        <!-- Q4: yes/no, "No" runs away from the cursor -->
+        <div id="gateQ4Block" hidden>
+          <p class="gate__question" id="gateQ4Question">mere saath bahar ghumi ghumi karne chalogi?</p>
+          <div class="gate__yesno">
+            <button class="gate__opt" id="gateQ4Yes" type="button">Yes</button>
+            <button class="gate__opt gate__runaway" id="gateQ4No" type="button">No</button>
+          </div>
+          <p class="gate__feedback" id="gateQ4Feedback" aria-live="polite"></p>
+        </div>
+
+        <!-- Q5: yes shows a 7s image, no unlocks straight away -->
+        <div id="gateQ5Block" hidden>
+          <p class="gate__question" id="gateQ5Question">aap mere se naraaz ho 👉👈</p>
+          <div class="gate__yesno">
+            <button class="gate__opt" id="gateQ5Yes" type="button">Yes</button>
+            <button class="gate__opt" id="gateQ5No" type="button">No</button>
+          </div>
+        </div>
       </div>
 
+    </div>
+  </div>
+
+  <!-- Q5-only popup image, auto-closes after 7 seconds -->
+  <div class="imgPopup" id="imgPopup" hidden>
+    <div class="imgPopup__card">
+      <img id="imgPopupImg" src="" alt="a little guilt trip" />
     </div>
   </div>
 

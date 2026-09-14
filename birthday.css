@@ -632,3 +632,32 @@ body{
 @media (max-width:420px){
   .secretHeart, .muteBtn{ width:38px; height:38px; font-size:16px; }
 }
+
+/* ============================================================
+   Q4 / Q5 — yes/no rows + the runaway "No" button
+   ============================================================ */
+.gate__yesno{
+  display:flex; flex-direction:row; gap:14px; width:100%;
+}
+.gate__yesno .gate__opt{ flex:1; text-align:center; }
+.gate__runaway{
+  transition:left .16s ease, top .16s ease, background .2s ease, border-color .2s ease;
+}
+
+/* ============================================================
+   Q5 image popup — shown only for 7s when "Yes" is picked
+   ============================================================ */
+.imgPopup{
+  position:fixed; inset:0; z-index:1010;
+  display:flex; align-items:center; justify-content:center;
+  background:rgba(20,8,14,.82); padding:24px;
+}
+.imgPopup[hidden]{ display:none; }
+.imgPopup__card{
+  max-width:min(420px,90vw); width:100%;
+  background:#fff8f1; border-radius:20px; padding:14px;
+  box-shadow:0 20px 60px rgba(0,0,0,.4);
+}
+.imgPopup__card img{
+  width:100%; height:auto; border-radius:14px; display:block;
+}

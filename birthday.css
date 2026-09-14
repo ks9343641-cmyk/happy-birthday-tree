@@ -678,12 +678,11 @@ body{
 }
 .gate__mirror > *{ transition:opacity .25s ease; position:relative; z-index:2; }
 .gate__shardLayer{
-  position:absolute; inset:0; pointer-events:none; z-index:5; overflow:visible;
+  position:fixed; inset:0; pointer-events:none; z-index:1006; overflow:visible;
 }
 .gate__shard{
   position:absolute;
-  background:linear-gradient(135deg, rgba(255,255,255,.22), rgba(255,255,255,.05));
-  border:1px solid rgba(255,255,255,.28);
-  transition:transform .75s cubic-bezier(.32,.02,.25,1), opacity .75s ease;
+  border:1px solid rgba(255,255,255,.12);
+  transition:transform .8s cubic-bezier(.32,.02,.25,1), opacity .8s ease;
   will-change:transform, opacity;
 }

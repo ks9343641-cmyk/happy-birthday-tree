@@ -211,6 +211,9 @@ const gateQ5No = $('gateQ5No');
 const imgPopup = $('imgPopup');
 const imgPopupImg = $('imgPopupImg');
 
+const gateThanks = $('gateThanks');
+const gateThanksPercent = $('gateThanksPercent');
+
 const secretHeart = $('secretHeart');
 const secretModal = $('secretModal');
 const secretModalText = $('secretModalText');
@@ -219,7 +222,7 @@ const secretModalClose = $('secretModalClose');
 const bgMusic = $('bgMusic');
 const muteBtn = $('muteBtn');
 
-const ALL_PHASES = [gateSecurity, gateLoading, gatePage2];
+const ALL_PHASES = [gateSecurity, gateLoading, gatePage2, gateThanks];
 function showPhase(el) {
   ALL_PHASES.forEach((p) => { p.hidden = p !== el; });
 }
@@ -253,15 +256,19 @@ gateSecurityInput?.addEventListener('keydown', (e) => {
 });
 
 function shatterMirror() {
-  const rect = gateMirror.getBoundingClientRect();
-  const cols = 4, rows = 4;
-  const cw = rect.width / cols, ch = rect.height / rows;
-  gateShardLayer.innerHTML = '';
-
   // fade the real content out first so it doesn't linger behind the shards
   [...gateMirror.children].forEach((child) => {
     if (child !== gateShardLayer) child.style.opacity = '0';
   });
+
+  // the whole screen breaks apart, not just the little card — tile the
+  // full viewport with pieces that share one continuous background so
+  // they line up perfectly before flying apart.
+  const w = window.innerWidth, h = window.innerHeight;
+  const cols = 7, rows = 9;
+  const cw = w / cols, ch = h / rows;
+  const gateBg = 'radial-gradient(120% 120% at 50% 20%, #2a1420 0%, #150910 60%, #0c060a 100%)';
+  gateShardLayer.innerHTML = '';
 
   const shards = [];
   for (let r = 0; r < rows; r++) {
@@ -272,6 +279,11 @@ function shatterMirror() {
       shard.style.top = (r * ch) + 'px';
       shard.style.width = cw + 'px';
       shard.style.height = ch + 'px';
+      // background-attachment:fixed keeps the gradient anchored to the
+      // viewport, so every tile shows the exact slice it should — the
+      // pieces read as one broken image, not a repeated pattern.
+      shard.style.backgroundImage = gateBg;
+      shard.style.backgroundAttachment = 'fixed';
       gateShardLayer.appendChild(shard);
       shards.push(shard);
     }
@@ -279,9 +291,9 @@ function shatterMirror() {
   void gateShardLayer.offsetWidth; // reflow so transitions actually animate
 
   shards.forEach((shard) => {
-    const dx = (Math.random() - 0.5) * 500;
-    const dy = (Math.random() - 0.3) * 500;
-    const rot = (Math.random() - 0.5) * 640;
+    const dx = (Math.random() - 0.5) * 1100;
+    const dy = (Math.random() - 0.15) * 1100;
+    const rot = (Math.random() - 0.5) * 720;
     shard.style.transform = `translate(${dx}px, ${dy}px) rotate(${rot}deg)`;
     shard.style.opacity = '0';
   });
@@ -289,7 +301,7 @@ function shatterMirror() {
   setTimeout(() => {
     showPhase(gateLoading);
     runLoadingPrank();
-  }, 780);
+  }, 850);
 }
 
 /* ---------- phase 1: big loader + live percentage --------------- */
@@ -473,7 +485,7 @@ function showQ5() {
 
 gateQ5No?.addEventListener('click', () => {
   gateQ5Block.hidden = true;
-  unlock();
+  showThanks();
 });
 
 gateQ5Yes?.addEventListener('click', () => {
@@ -485,6 +497,25 @@ gateQ5Yes?.addEventListener('click', () => {
     showQ5(); // ask again — loops until she picks "No"
   }, Q5_IMAGE_SECONDS * 1000);
 });
+
+/* ---------- final "thank you" pause before the real film -------- */
+function showThanks() {
+  showPhase(gateThanks);
+  const totalMs = 5000, stepMs = 140;
+  const totalSteps = totalMs / stepMs;
+  let step = 0;
+  gateThanksPercent.textContent = '0%';
+  const tick = setInterval(() => {
+    step++;
+    const pct = Math.min(100, (step / totalSteps) * 100);
+    gateThanksPercent.textContent = Math.floor(pct) + '%';
+    if (step >= totalSteps) {
+      clearInterval(tick);
+      gateThanksPercent.textContent = '100%';
+      setTimeout(unlock, 200);
+    }
+  }, stepMs);
+}
 
 /* ---------- unlock: reveal the real film + start music --------- */
 function unlock() {

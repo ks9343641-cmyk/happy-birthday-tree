@@ -321,7 +321,7 @@ function buildScene(){
   const sc = (T.branchSpan - T.trunkStart) / (maxT0 - T.trunkStart);
   for (const b of branches) b.t0 = T.trunkStart + (b.t0 - T.trunkStart) * sc;
 
-  const COUNT = Math.round(clamp(rx * ry / 56, 250, 440));
+  const COUNT = Math.round(clamp(rx * ry / 56, 400, 440));
   const baseBox = clamp(Math.min(W, H) * 0.115, 30, 74);
   let guard = 0;
   while (hearts.length < COUNT && guard < COUNT * 50){

@@ -26,8 +26,20 @@
   <div class="gate" id="gate" role="dialog" aria-modal="true" aria-label="One moment">
     <div class="gate__panel" id="gatePanel">
 
+      <!-- phase 0: security / password gate -->
+      <div class="gate__phase" id="gateSecurity">
+        <div class="gate__mirror" id="gateMirror">
+          <p class="gate__msg">Enter karne se pehle aapko password dalna padega access lene ke liye 🔒</p>
+          <input class="gate__nameInput" id="gateSecurityInput" type="password" autocomplete="off"
+                 placeholder="password" aria-label="Password" />
+          <button class="gate__opt gate__nameSubmit" id="gateSecuritySubmit" type="button">Unlock</button>
+          <p class="gate__feedback" id="gateSecurityFeedback" aria-live="polite"></p>
+          <div class="gate__shardLayer" id="gateShardLayer" aria-hidden="true"></div>
+        </div>
+      </div>
+
       <!-- phase 1: big loader + live percentage -->
-      <div class="gate__phase" id="gateLoading">
+      <div class="gate__phase" id="gateLoading" hidden>
         <div class="gate__spinner gate__spinner--big" aria-hidden="true"></div>
         <p class="gate__percent" id="gatePercent">0%</p>
         <p class="gate__msg" id="gateLoadingMsg">loading your gift&hellip;</p>
@@ -67,7 +79,7 @@
 
         <!-- Q5: yes shows a 7s image, no unlocks straight away -->
         <div id="gateQ5Block" hidden>
-          <p class="gate__question" id="gateQ5Question">aap mere se naraaz ho 👉👈</p>
+          <p class="gate__question" id="gateQ5Question">aap mere se pareshan to nahi hote ho na 👉👈 cuz i send u reel everyday</p>
           <div class="gate__yesno">
             <button class="gate__opt" id="gateQ5Yes" type="button">Yes</button>
             <button class="gate__opt" id="gateQ5No" type="button">No</button>

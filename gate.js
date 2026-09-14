@@ -6,11 +6,24 @@
    ✏️  EVERYTHING YOU MIGHT WANT TO EDIT IS RIGHT HERE AT THE TOP.
    ============================================================ */
 
+// --- 0) SECURITY PASSWORD -------------------------------------------
+// Checked only in this file — never shown on screen. (Note: since this
+// runs in the browser, anyone who opens dev tools and reads the source
+// could technically find it — this is a fun lock, not real security.)
+const SECURITY_PASSWORD = "karttik.0007";
+const SECURITY_WRONG_TAUNTS = [
+  "nahi, wo sahi password nahi hai 🔒 phir try karo",
+  "galat! ek aur chance 😏",
+  "nope, dobara socho 🤔",
+  "aacha try tha, par nahi 😂",
+];
+
 // --- 1) THE QUIZ (Q1–Q3) ------------------------------------------
 // Each question has options + the 0-based index of the correct one.
 // `taunts[i]` is a LIST of possible lines for wrong option i — one is
-// picked at random every time, so repeated wrong clicks don't repeat
-// the same joke. The entry at `correct` is never used.
+// picked at random every time (never the same one twice in a row for
+// that option), so wrong clicks always feel fresh. The entry at
+// `correct` is never used.
 const QUIZ = [
   {
     q: "What's today, really?",
@@ -26,17 +39,26 @@ const QUIZ = [
         "arey wah, kisi normal Tuesday ke liye itni mehnat karta kya main? 🙄 phir try kar",
         "Tuesday itna special kab se ho gaya bhala 😂 phir try karo",
         "agar ye sahi hota toh main itni mehnat kyu karta ek Tuesday ke liye 😭",
+        "Tuesday? bhai Tuesday ko toh khud pata nahi hoga ki wo itna important hai 😂",
+        "arre tuesday walo ko toh apna naam bhi yaad nahi rehta 😭 phir try karo",
+        "itna basic answer dekh ke mera dil toot gaya 💔😂 ek aur try",
       ],
       [
         "achha nice guess, par nahi — ek aur chance 😏",
         "close tha... ek dum bhi nahi actually 😂 phir try karo",
         "nahi bhai, calendar dobara check karo 📅😜",
+        "nice try, khud ko hi guess kar liya 😂 par galat hai",
+        "arre thoda toh dimag lagao, aaj tumhara birthday nahi hai silly 😜",
+        "cute guess tha, par bilkul galat 😂",
       ],
       [], // correct — unused
       [
         "haha nice try, par aaj sirf ek hi sundar cheez ka birthday hai... aur uska naam Kusum hai, ye wala nahi 😏",
         "flattery will get you nowhere 😂 galat jawab hai",
         "sweet answer, galat answer 😂 ek aur try karo",
+        "haha smooth try, par yeh flattery kaam nahi aayegi 😏",
+        "sweet talk se quiz pass nahi hota, dobara socho 😂",
+        "nice compliment, wrong answer 💀😂",
       ],
     ],
   },
@@ -54,16 +76,25 @@ const QUIZ = [
         "stranger itni mehnat kyu karega bhala? 🤨 phir try karo",
         "stranger ko itna time kaha hota hai yaar 😂",
         "random stranger, ha bilkul... jaise wo tumhare liye website banayega 😆",
+        "stranger ko itna fursat kaha milta hai bhai 😂",
+        "arre stranger hota toh mujhe tumhara naam bhi nahi pata hota 😭",
+        "yeh answer dekh ke lagta hai tum bhi kisi stranger jaisa soch rahi ho 😂",
       ],
       [
         "haha nahi, wo bechara khud confuse rehta hai 😂 ek aur try",
         "kartik? uska khud ka schedule set nahi hai 😂",
         "nahi yaar, kartik ko toh khud gift chahiye kisi se 😜",
+        "kartik? uska toh khud ka WiFi off rehta hai emotionally 😂",
+        "nahi yaar, wo bandaa apna hi gift bhool jaata hai 😭",
+        "kartik itni patience kaha se laayega bhala 😜",
       ],
       [
         "arey wo toh already busy hai timepass karne me 😂 phir try karo",
         "berozgaar log itni creativity kaha se laayenge 😂",
         "nahi bhai, uske paas toh WiFi bhi udhaar ka hai 😭",
+        "berozgaar hai, par itna creative bhi nahi 😂",
+        "uska toh apna hi kaam time pe nahi hota 😭",
+        "nahi bhai, wo toh khud confuse baitha hai apni zindagi mein 😂",
       ],
       [], // correct — unused
     ],
@@ -77,6 +108,9 @@ const QUIZ = [
         "achha? theek hai, thoda aur wait karwate hai tumhe 😌 (bas mazak, wapas click kar)",
         "arre itna bhi patience nahi? 😜 phir se try karo",
         "ok fine, tum abhi ready nahi ho... jhoothi kahin ki 😂 phir try karo",
+        "arre patience thoda kam hai kya tumhara 😂",
+        "not really? sach me? phir kyu click kar rahi ho baar baar 😜",
+        "drama zyada mat karo, phir se try karo 😂",
       ],
       [], // correct — unused
     ],
@@ -95,10 +129,18 @@ const NAME_WRONG_TAUNT = "nahi, wo naam nahi tha… ek aur try karo 😏";
 // If the cursor (or a touch) gets within this many pixels of the
 // "No" button, it teleports somewhere else on screen.
 const Q4_REPEL_DISTANCE = 90;
+const Q4_NO_TAUNTS = [
+  "nahi bhaagne dungi... i mean, 'No' bolne nahi dunga 😏",
+  "arre pakadna toh padega pehle 😜",
+  "'No' aaj chhutti pe hai 😂",
+  "itni jaldi haar mat maano, thoda aur try karo 😏",
+];
 
-// --- 4) Q5 — the "are you angry" image ------------------------------
-// Shown only if she taps "Yes" here, for exactly this many seconds.
-const Q5_IMAGE_SRC = `${import.meta.env.BASE_URL}images/angry-guilt.jpg`;
+// --- 4) Q5 — "cuz I send u reel everyday" ---------------------------
+// If she taps "Yes", this image shows for a few seconds, then Q5 is
+// asked again — on repeat, for as long as she keeps saying "Yes".
+// Saying "No" moves straight on to the real film.
+const Q5_IMAGE_SRC = `${import.meta.env.BASE_URL}images/sorry-flower.jpg`;
 const Q5_IMAGE_SECONDS = 7;
 
 // --- 5) THE SECRET HEART -----------------------------------------
@@ -121,7 +163,26 @@ const MUSIC_SRC = `${import.meta.env.BASE_URL}audio/bday-song.mp3`;
 const $ = (id) => document.getElementById(id);
 const pick = (arr) => arr[(Math.random() * arr.length) | 0];
 
+// Anti-repeat random picker: never returns the same string twice in a
+// row for the same `key`.
+const _lastPick = {};
+function pickNoRepeat(key, pool) {
+  if (!pool || !pool.length) return null;
+  if (pool.length === 1) { _lastPick[key] = pool[0]; return pool[0]; }
+  let choice;
+  do { choice = pick(pool); } while (choice === _lastPick[key]);
+  _lastPick[key] = choice;
+  return choice;
+}
+
 const gate = $('gate');
+const gateSecurity = $('gateSecurity');
+const gateMirror = $('gateMirror');
+const gateShardLayer = $('gateShardLayer');
+const gateSecurityInput = $('gateSecurityInput');
+const gateSecuritySubmit = $('gateSecuritySubmit');
+const gateSecurityFeedback = $('gateSecurityFeedback');
+
 const gateLoading = $('gateLoading');
 const gatePage2 = $('gatePage2');
 const gatePercent = $('gatePercent');
@@ -158,8 +219,9 @@ const secretModalClose = $('secretModalClose');
 const bgMusic = $('bgMusic');
 const muteBtn = $('muteBtn');
 
+const ALL_PHASES = [gateSecurity, gateLoading, gatePage2];
 function showPhase(el) {
-  [gateLoading, gatePage2].forEach((p) => { p.hidden = p !== el; });
+  ALL_PHASES.forEach((p) => { p.hidden = p !== el; });
 }
 
 function shakePanel() {
@@ -168,10 +230,72 @@ function shakePanel() {
   gatePanel.classList.add('shake');
 }
 
+function shakeMirror() {
+  gateMirror.classList.remove('shake');
+  void gateMirror.offsetWidth;
+  gateMirror.classList.add('shake');
+}
+
+/* ---------- phase 0: security / password ------------------------ */
+function checkSecurityPassword() {
+  const val = (gateSecurityInput.value || '').trim();
+  if (val === SECURITY_PASSWORD) {
+    gateSecurityFeedback.textContent = '';
+    shatterMirror();
+  } else {
+    gateSecurityFeedback.textContent = pickNoRepeat('security', SECURITY_WRONG_TAUNTS);
+    shakeMirror();
+  }
+}
+gateSecuritySubmit?.addEventListener('click', checkSecurityPassword);
+gateSecurityInput?.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') checkSecurityPassword();
+});
+
+function shatterMirror() {
+  const rect = gateMirror.getBoundingClientRect();
+  const cols = 4, rows = 4;
+  const cw = rect.width / cols, ch = rect.height / rows;
+  gateShardLayer.innerHTML = '';
+
+  // fade the real content out first so it doesn't linger behind the shards
+  [...gateMirror.children].forEach((child) => {
+    if (child !== gateShardLayer) child.style.opacity = '0';
+  });
+
+  const shards = [];
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const shard = document.createElement('div');
+      shard.className = 'gate__shard';
+      shard.style.left = (c * cw) + 'px';
+      shard.style.top = (r * ch) + 'px';
+      shard.style.width = cw + 'px';
+      shard.style.height = ch + 'px';
+      gateShardLayer.appendChild(shard);
+      shards.push(shard);
+    }
+  }
+  void gateShardLayer.offsetWidth; // reflow so transitions actually animate
+
+  shards.forEach((shard) => {
+    const dx = (Math.random() - 0.5) * 500;
+    const dy = (Math.random() - 0.3) * 500;
+    const rot = (Math.random() - 0.5) * 640;
+    shard.style.transform = `translate(${dx}px, ${dy}px) rotate(${rot}deg)`;
+    shard.style.opacity = '0';
+  });
+
+  setTimeout(() => {
+    showPhase(gateLoading);
+    runLoadingPrank();
+  }, 780);
+}
+
 /* ---------- phase 1: big loader + live percentage --------------- */
 function runLoadingPrank() {
-  showPhase(gateLoading);
   let pct = 0;
+  gatePercent.textContent = '0%';
   const tick = setInterval(() => {
     pct = Math.min(100, pct + (5 + Math.random() * 9));
     gatePercent.textContent = Math.floor(pct) + '%';
@@ -235,7 +359,7 @@ function handleAnswer(i, btn) {
   } else {
     btn.classList.add('is-wrong');
     const pool = item.taunts[i];
-    gateFeedback.textContent = (pool && pool.length) ? pick(pool) : "nahi, wo sahi nahi tha 😏 phir try karo";
+    gateFeedback.textContent = pickNoRepeat(`q${qIndex}-${i}`, pool) || "nahi, wo sahi nahi tha 😏 phir try karo";
     shakePanel();
     setTimeout(() => {
       allBtns.forEach((b) => {
@@ -274,12 +398,6 @@ gateNameInput?.addEventListener('keydown', (e) => {
 
 /* ---------- Q4: "wanna go out with me" — the runaway No --------- */
 let q4Active = false;
-const q4NoTaunts = [
-  "nahi bhaagne dungi... i mean, 'No' bolne nahi dunga 😏",
-  "arre pakadna toh padega pehle 😜",
-  "'No' aaj chhutti pe hai 😂",
-  "itni jaldi haar mat maano, thoda aur try karo 😏",
-];
 
 function showQ4() {
   gateNameBlock.hidden = true;
@@ -342,13 +460,13 @@ gateQ4Yes?.addEventListener('click', () => {
 
 gateQ4No?.addEventListener('click', () => {
   // it shouldn't really be reachable, but just in case — tease + move again
-  gateQ4Feedback.textContent = pick(q4NoTaunts);
+  gateQ4Feedback.textContent = pickNoRepeat('q4no', Q4_NO_TAUNTS);
   shakePanel();
   const rect = gateQ4No.getBoundingClientRect();
   moveNoIfClose(rect.left + rect.width / 2, rect.top + rect.height / 2);
 });
 
-/* ---------- Q5: "are you angry" — yes shows a 7s image ----------- */
+/* ---------- Q5: "reel everyday" — yes loops back with an image --- */
 function showQ5() {
   gateQ5Block.hidden = false;
 }
@@ -364,7 +482,7 @@ gateQ5Yes?.addEventListener('click', () => {
   imgPopup.hidden = false;
   setTimeout(() => {
     imgPopup.hidden = true;
-    unlock();
+    showQ5(); // ask again — loops until she picks "No"
   }, Q5_IMAGE_SECONDS * 1000);
 });
 
@@ -407,6 +525,6 @@ muteBtn?.addEventListener('click', () => {
   muteBtn.textContent = bgMusic.muted ? '🔇' : '🔊';
 });
 
-/* ---------- go ---------------------------------------------------- */
+/* ---------- go: start on the security phase ---------------------- */
 document.body.style.overflow = 'hidden';
-runLoadingPrank();
+showPhase(gateSecurity);

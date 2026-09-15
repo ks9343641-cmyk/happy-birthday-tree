@@ -293,7 +293,7 @@ function spawnBalloon(zone) {
 }
 
 function runBalloonLoop() {
-  const pattern = [3, 2, 3, 1];
+  const pattern = [4, 3, 5, 3, 4];
   let p = 0;
   const zones = ['left', 'right', 'center'];
   function wave() {
@@ -301,9 +301,9 @@ function runBalloonLoop() {
     p++;
     for (let i = 0; i < count; i++) {
       const zone = pick(zones);
-      setTimeout(() => spawnBalloon(zone), i * 220);
+      setTimeout(() => spawnBalloon(zone), i * 150);
     }
-    balloonWaveTimer = setTimeout(wave, 2600 + Math.random() * 900);
+    balloonWaveTimer = setTimeout(wave, 1300 + Math.random() * 600);
   }
   wave();
 }

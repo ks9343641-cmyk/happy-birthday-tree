@@ -185,8 +185,6 @@ const gateSecurityFeedback = $('gateSecurityFeedback');
 
 const gateBalloons = $('gateBalloons');
 const gateRibbon = $('gateRibbon');
-const gatePenguin = $('gatePenguin');
-const gatePenguinBubble = $('gatePenguinBubble');
 
 const gateLoading = $('gateLoading');
 const gatePage2 = $('gatePage2');
@@ -244,10 +242,9 @@ function shakeMirror() {
   gateMirror.classList.add('shake');
 }
 
-/* ---------- security page decorations: balloons/ribbon/penguin --- */
+/* ---------- security page decorations: balloons/ribbon ---------- */
 const DECOR_COLORS = ['#ff5f8f', '#ffb648', '#5fc9ff', '#ff8fd0', '#ffd25f', '#8fd7ff'];
 let balloonWaveTimer = null;
-let penguinFallTimer = null;
 
 function buildRibbon() {
   if (!gateRibbon) return;
@@ -308,24 +305,8 @@ function runBalloonLoop() {
   wave();
 }
 
-function triggerPenguinFall() {
-  if (!gatePenguin) return;
-  gatePenguin.classList.add('is-falling');
-  setTimeout(() => { gatePenguinBubble.classList.add('is-show'); }, 500);
-  setTimeout(() => { gatePenguinBubble.classList.remove('is-show'); }, 1900);
-  setTimeout(() => { gatePenguin.classList.remove('is-falling'); }, 1800);
-}
-
-function runPenguinLoop() {
-  penguinFallTimer = setTimeout(function loop() {
-    triggerPenguinFall();
-    penguinFallTimer = setTimeout(loop, 11000 + Math.random() * 5000);
-  }, 6000 + Math.random() * 3000);
-}
-
 function stopSecurityDecorations() {
   if (balloonWaveTimer) clearTimeout(balloonWaveTimer);
-  if (penguinFallTimer) clearTimeout(penguinFallTimer);
   if (gateBalloons) gateBalloons.innerHTML = '';
 }
 
@@ -652,5 +633,4 @@ muteBtn?.addEventListener('click', () => {
 document.body.style.overflow = 'hidden';
 buildRibbon();
 runBalloonLoop();
-runPenguinLoop();
 showPhase(gateSecurity);

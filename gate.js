@@ -183,6 +183,11 @@ const gateSecurityInput = $('gateSecurityInput');
 const gateSecuritySubmit = $('gateSecuritySubmit');
 const gateSecurityFeedback = $('gateSecurityFeedback');
 
+const gateBalloons = $('gateBalloons');
+const gateRibbon = $('gateRibbon');
+const gatePenguin = $('gatePenguin');
+const gatePenguinBubble = $('gatePenguinBubble');
+
 const gateLoading = $('gateLoading');
 const gatePage2 = $('gatePage2');
 const gatePercent = $('gatePercent');
@@ -239,6 +244,91 @@ function shakeMirror() {
   gateMirror.classList.add('shake');
 }
 
+/* ---------- security page decorations: balloons/ribbon/penguin --- */
+const DECOR_COLORS = ['#ff5f8f', '#ffb648', '#5fc9ff', '#ff8fd0', '#ffd25f', '#8fd7ff'];
+let balloonWaveTimer = null;
+let penguinFallTimer = null;
+
+function buildRibbon() {
+  if (!gateRibbon) return;
+  const words = ['HAPPY', 'BIRTHDAY'];
+  gateRibbon.innerHTML = '';
+  let idx = 0;
+  words.forEach((word) => {
+    const wordWrap = document.createElement('div');
+    wordWrap.className = 'gate__ribbonWord';
+    [...word].forEach((ch) => {
+      const el = document.createElement('span');
+      el.className = 'gate__ribbonLetter';
+      el.textContent = ch;
+      el.style.setProperty('--i', idx);
+      el.style.setProperty('--rot', (idx % 2 === 0 ? -4 : 3) + 'deg');
+      el.style.background = DECOR_COLORS[idx % DECOR_COLORS.length];
+      wordWrap.appendChild(el);
+      idx++;
+    });
+    gateRibbon.appendChild(wordWrap);
+  });
+}
+
+function spawnBalloon(zone) {
+  if (!gateBalloons) return;
+  const b = document.createElement('div');
+  b.className = 'gate__balloon';
+  b.style.background = pick(DECOR_COLORS);
+  let leftPct;
+  if (zone === 'left') leftPct = -4 + Math.random() * 16;
+  else if (zone === 'right') leftPct = 88 + Math.random() * 16;
+  else leftPct = 40 + Math.random() * 20; // rises up right behind the box
+  b.style.left = leftPct + '%';
+  const dur = 8 + Math.random() * 5;
+  const drift = (Math.random() - 0.5) * 120;
+  gateBalloons.appendChild(b);
+  requestAnimationFrame(() => {
+    b.style.transition = `transform ${dur}s linear, opacity 1.2s ease ${dur - 1.2}s`;
+    b.style.transform = `translate(${drift}px, -135vh)`;
+    b.style.opacity = '0';
+  });
+  setTimeout(() => { b.remove(); }, (dur + 0.5) * 1000);
+}
+
+function runBalloonLoop() {
+  const pattern = [3, 2, 3, 1];
+  let p = 0;
+  const zones = ['left', 'right', 'center'];
+  function wave() {
+    const count = pattern[p % pattern.length];
+    p++;
+    for (let i = 0; i < count; i++) {
+      const zone = pick(zones);
+      setTimeout(() => spawnBalloon(zone), i * 220);
+    }
+    balloonWaveTimer = setTimeout(wave, 2600 + Math.random() * 900);
+  }
+  wave();
+}
+
+function triggerPenguinFall() {
+  if (!gatePenguin) return;
+  gatePenguin.classList.add('is-falling');
+  setTimeout(() => { gatePenguinBubble.classList.add('is-show'); }, 500);
+  setTimeout(() => { gatePenguinBubble.classList.remove('is-show'); }, 1900);
+  setTimeout(() => { gatePenguin.classList.remove('is-falling'); }, 1800);
+}
+
+function runPenguinLoop() {
+  penguinFallTimer = setTimeout(function loop() {
+    triggerPenguinFall();
+    penguinFallTimer = setTimeout(loop, 11000 + Math.random() * 5000);
+  }, 6000 + Math.random() * 3000);
+}
+
+function stopSecurityDecorations() {
+  if (balloonWaveTimer) clearTimeout(balloonWaveTimer);
+  if (penguinFallTimer) clearTimeout(penguinFallTimer);
+  if (gateBalloons) gateBalloons.innerHTML = '';
+}
+
 /* ---------- phase 0: security / password ------------------------ */
 function checkSecurityPassword() {
   const val = (gateSecurityInput.value || '').trim();
@@ -256,6 +346,8 @@ gateSecurityInput?.addEventListener('keydown', (e) => {
 });
 
 function shatterMirror() {
+  stopSecurityDecorations();
+
   // fade the real content out first so it doesn't linger behind the shards
   [...gateMirror.children].forEach((child) => {
     if (child !== gateShardLayer) child.style.opacity = '0';
@@ -558,4 +650,7 @@ muteBtn?.addEventListener('click', () => {
 
 /* ---------- go: start on the security phase ---------------------- */
 document.body.style.overflow = 'hidden';
+buildRibbon();
+runBalloonLoop();
+runPenguinLoop();
 showPhase(gateSecurity);

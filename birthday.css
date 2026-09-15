@@ -686,3 +686,119 @@ body{
   transition:transform .8s cubic-bezier(.32,.02,.25,1), opacity .8s ease;
   will-change:transform, opacity;
 }
+
+/* ============================================================
+   SECURITY PAGE DECORATIONS — balloons, hanging ribbon, penguin.
+   All pointer-events:none so they never block the password box.
+   ============================================================ */
+
+/* -- balloons: rise behind the box (lower z-index than mirror) -- */
+.gate__balloons{
+  position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:2;
+}
+.gate__balloon{
+  position:absolute; bottom:-140px; width:42px; height:52px;
+  border-radius:50% 50% 50% 50% / 60% 60% 42% 42%;
+  opacity:.92; filter:drop-shadow(0 4px 10px rgba(0,0,0,.22));
+}
+.gate__balloon::before{
+  content:''; position:absolute; left:24%; top:16%; width:26%; height:16%;
+  background:rgba(255,255,255,.4); border-radius:50%;
+}
+.gate__balloon::after{
+  content:''; position:absolute; left:50%; top:100%; width:1px; height:34px;
+  background:rgba(255,255,255,.4); transform:translateX(-50%);
+}
+
+/* box must sit above the balloons */
+.gate__mirror{ z-index:5; }
+
+/* -- hanging "HAPPY BIRTHDAY" ribbon, sits above the box -- */
+.gate__ribbon{
+  position:fixed; top:4%; left:50%; transform:translateX(-50%);
+  z-index:6; display:flex; flex-direction:column; align-items:center; gap:6px;
+  pointer-events:none;
+}
+.gate__ribbonWord{ display:flex; gap:3px; }
+.gate__ribbonLetter{
+  position:relative; display:inline-flex; align-items:center; justify-content:center;
+  width:26px; height:30px; border-radius:6px; color:#fff;
+  font-family:"Fraunces", Georgia, serif; font-weight:800; font-size:15px;
+  opacity:0; transform:translateY(-46px) rotate(var(--rot, 0deg));
+  animation:ribbonDrop .6s ease forwards;
+  animation-delay:calc(var(--i, 0) * 90ms);
+  box-shadow:0 3px 8px rgba(0,0,0,.25);
+}
+.gate__ribbonLetter::before{
+  content:''; position:absolute; left:50%; bottom:100%; width:1px; height:16px;
+  background:rgba(255,255,255,.55); transform:translateX(-50%);
+}
+@keyframes ribbonDrop{
+  0%{ opacity:0; transform:translateY(-46px) rotate(var(--rot, 0deg)); }
+  70%{ opacity:1; transform:translateY(4px) rotate(var(--rot, 0deg)); }
+  100%{ opacity:1; transform:translateY(0) rotate(var(--rot, 0deg)); }
+}
+
+/* -- penguin: walks back and forth along the very bottom -- */
+.gate__penguinTrack{
+  position:fixed; left:0; right:0; bottom:1.5%; height:70px;
+  pointer-events:none; z-index:4; overflow:visible;
+}
+.gate__penguinWrap{
+  position:absolute; bottom:0; left:6%;
+  animation:penguinWalk 13s ease-in-out infinite;
+}
+@keyframes penguinWalk{
+  0%{   left:6%;  transform:scaleX(1)  translateY(0); }
+  46%{  left:86%; transform:scaleX(1)  translateY(-5px); }
+  50%{  left:86%; transform:scaleX(-1) translateY(0); }
+  96%{  left:6%;  transform:scaleX(-1) translateY(-5px); }
+  100%{ left:6%;  transform:scaleX(1)  translateY(0); }
+}
+.gate__penguin{
+  position:relative; width:34px; height:40px; transition:transform .3s ease;
+}
+.gate__penguin.is-falling{ animation:penguinFall 1.8s ease-in-out; }
+@keyframes penguinFall{
+  0%{   transform:rotate(0deg)   translateY(0); }
+  22%{  transform:rotate(88deg)  translateY(6px); }
+  62%{  transform:rotate(88deg)  translateY(6px); }
+  100%{ transform:rotate(0deg)   translateY(0); }
+}
+.gate__penguin::before{ /* body */
+  content:''; position:absolute; inset:2px 0 0 0;
+  background:#9aa0ad; border-radius:50% 50% 46% 46% / 58% 58% 42% 42%;
+}
+.gate__penguin::after{ /* belly */
+  content:''; position:absolute; left:20%; top:34%; width:60%; height:58%;
+  background:#fff8f1; border-radius:50%;
+}
+.gate__penguinEye{ position:absolute; top:22%; width:4px; height:4px; background:#221; border-radius:50%; z-index:2; }
+.gate__penguinEye--l{ left:32%; }
+.gate__penguinEye--r{ left:56%; }
+.gate__penguinBeak{
+  position:absolute; top:32%; left:44%; width:0; height:0;
+  border-left:5px solid transparent; border-right:5px solid transparent;
+  border-top:6px solid #f4a626; transform:rotate(180deg); z-index:2;
+}
+.gate__penguinFoot{ position:absolute; bottom:-4px; width:10px; height:6px; background:#f4a626; border-radius:0 0 6px 6px; }
+.gate__penguinFoot--l{ left:6px; }
+.gate__penguinFoot--r{ right:6px; }
+
+.gate__penguinBubble{
+  position:absolute; bottom:120%; left:50%; transform:translateX(-50%) scale(.6);
+  background:#fff; color:#9c0f42; font-family:"Cormorant Garamond", Georgia, serif;
+  font-weight:700; font-size:13px; padding:4px 10px; border-radius:12px;
+  white-space:nowrap; opacity:0; transition:opacity .25s ease, transform .25s ease;
+  box-shadow:0 4px 10px rgba(0,0,0,.2); pointer-events:none;
+}
+.gate__penguinBubble::after{
+  content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%);
+  border:6px solid transparent; border-top-color:#fff;
+}
+.gate__penguinBubble.is-show{ opacity:1; transform:translateX(-50%) scale(1); }
+
+@media (max-width:420px){
+  .gate__ribbonLetter{ width:20px; height:24px; font-size:12px; }
+  .gate__balloon{ width:32px; height:40px; }
+}

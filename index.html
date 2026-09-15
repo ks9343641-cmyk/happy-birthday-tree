@@ -28,6 +28,10 @@
 
       <!-- phase 0: security / password gate -->
       <div class="gate__phase" id="gateSecurity">
+        <div class="gate__balloons" id="gateBalloons" aria-hidden="true"></div>
+
+        <div class="gate__ribbon" id="gateRibbon" aria-hidden="true"></div>
+
         <div class="gate__mirror" id="gateMirror">
           <p class="gate__msg">Enter karne se pehle aapko password dalna padega access lene ke liye 🔒</p>
           <input class="gate__nameInput" id="gateSecurityInput" type="password" autocomplete="off"
@@ -35,6 +39,19 @@
           <button class="gate__opt gate__nameSubmit" id="gateSecuritySubmit" type="button">Unlock</button>
           <p class="gate__feedback" id="gateSecurityFeedback" aria-live="polite"></p>
           <div class="gate__shardLayer" id="gateShardLayer" aria-hidden="true"></div>
+        </div>
+
+        <div class="gate__penguinTrack" id="gatePenguinTrack" aria-hidden="true">
+          <div class="gate__penguinWrap" id="gatePenguinWrap">
+            <div class="gate__penguin" id="gatePenguin">
+              <span class="gate__penguinFoot gate__penguinFoot--l"></span>
+              <span class="gate__penguinFoot gate__penguinFoot--r"></span>
+              <span class="gate__penguinBeak"></span>
+              <span class="gate__penguinEye gate__penguinEye--l"></span>
+              <span class="gate__penguinEye gate__penguinEye--r"></span>
+            </div>
+            <div class="gate__penguinBubble" id="gatePenguinBubble">Sorry 😅</div>
+          </div>
         </div>
       </div>
 

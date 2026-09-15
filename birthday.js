@@ -287,7 +287,7 @@ function buildScene(){
   const trunkTopY = cy + ry * 0.62;
   const trunkW = Math.max(9, W * 0.024);
   const limbLen = ry * 0.6;
-  const insidePx = (x, y, m = 0.9) => pointInPoly((x - cx) / (rx * m), (cy - y) / (ry * m));
+  const insidePx = (x, y, m = 0.8) => pointInPoly((x - cx) / (rx * m), (cy - y) / (ry * m));
 
   function addBranch(x, y, ang, len, w0, depth, t0){
     let ex = x + Math.cos(ang) * len, ey = y + Math.sin(ang) * len, clipped = false;
@@ -296,7 +296,7 @@ function buildScene(){
       for (let k = 0; k < 12; k++){ const mid = (lo + hi) / 2; (insidePx(x + Math.cos(ang) * len * mid, y + Math.sin(ang) * len * mid) ? lo = mid : hi = mid); }
       ex = x + Math.cos(ang) * len * lo; ey = y + Math.sin(ang) * len * lo; clipped = true;
     }
-    const bendRaw = depth === 0 ? (Math.random() < 0.5 ? -1 : 1) * rand(0.55, 1) : rand(-1, 1);
+    const bendRaw = depth === 0 ? (Math.random() < 0.5 ? -1 : 1) * rand(0.75, 1.15) : rand(-1, 1);
     const mx = (x + ex) / 2, my = (y + ey) / 2, perp = ang + Math.PI / 2, bend = bendRaw * len * 0.12, w1 = w0 * 0.66;
     branches.push({ x1: x, y1: y, cx: mx + Math.cos(perp) * bend, cy: my + Math.sin(perp) * bend, x2: ex, y2: ey, w0, w1, t0, dur: Math.max(0.14, 0.32 - depth * 0.03), depth, grad: barkGrad(x, y, ex, ey, depth) });
     return { ex, ey, w1, clipped };
@@ -305,9 +305,9 @@ function buildScene(){
     const r = addBranch(x, y, ang, len, w, depth, t0);
     if (r.clipped || depth >= 6 || len < ry * 0.06) return;
     const childT0 = t0 + (0.32 - depth * 0.03) * 0.6;
-    const n = Math.random() < 0.55 ? 2 : 3;
+    const n = Math.random() < 0.7 ? 2 : 3;
     for (let i = 0; i < n; i++){
-      const spread = 0.6 * (i - (n - 1) / 2) + rand(-0.22, 0.22), lift = -0.06 + rand(-0.05, 0.05);
+      const spread = 0.6 * (i - (n - 1) / 2) + rand(-0.15, 0.15), lift = -0.06 + rand(-0.04, 0.04);
       grow(r.ex, r.ey, ang + spread + lift, len * rand(0.74, 0.84), r.w1, depth + 1, childT0 + i * 0.03);
     }
   }

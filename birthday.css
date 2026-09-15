@@ -767,7 +767,7 @@ body{
 }
 .gate__penguinBody{
   position:relative; width:100%; height:100%;
-  animation:penguinWaddle .72s ease-in-out infinite;
+  animation:penguinWaddle 1.6s ease-in-out infinite;
   transform-origin:50% 92%;
 }
 .gate__penguin.is-falling .gate__penguinBody,
@@ -775,8 +775,11 @@ body{
   animation-play-state:paused;
 }
 @keyframes penguinWaddle{
-  0%,100%{ transform:rotate(-7deg) translateY(0); }
-  50%{ transform:rotate(7deg) translateY(-2px); }
+  0%{   transform:rotate(-7deg) translateY(0); }
+  15%{  transform:rotate(-7deg) translateY(0); }
+  50%{  transform:rotate(7deg)  translateY(-2px); }
+  85%{  transform:rotate(7deg)  translateY(-2px); }
+  100%{ transform:rotate(-7deg) translateY(0); }
 }
 /* side-profile body, facing right by default — mirroring (scaleX(-1))
    on the wrap during the return leg makes it genuinely face left */
@@ -801,15 +804,21 @@ body{
   position:absolute; bottom:-3px; width:9px; height:5px;
   background:#f4a626; border-radius:0 0 6px 6px; transform-origin:50% 0%;
 }
-.gate__penguinFoot--l{ left:6px; animation:footStepL .72s ease-in-out infinite; }
-.gate__penguinFoot--r{ left:18px; animation:footStepR .72s ease-in-out infinite; }
+.gate__penguinFoot--l{ left:6px; animation:footStepL 1.6s ease-in-out infinite; }
+.gate__penguinFoot--r{ left:18px; animation:footStepR 1.6s ease-in-out infinite; }
 @keyframes footStepL{
-  0%,100%{ transform:translateY(0) rotate(-14deg) scaleY(1); }
-  50%{ transform:translateY(-4px) rotate(10deg) scaleY(.7); }
+  0%{   transform:translateY(0)    rotate(-14deg) scaleY(1); }
+  15%{  transform:translateY(0)    rotate(-14deg) scaleY(1); }
+  50%{  transform:translateY(-5px) rotate(12deg)  scaleY(.65); }
+  85%{  transform:translateY(0)    rotate(-14deg) scaleY(1); }
+  100%{ transform:translateY(0)    rotate(-14deg) scaleY(1); }
 }
 @keyframes footStepR{
-  0%,100%{ transform:translateY(-4px) rotate(10deg) scaleY(.7); }
-  50%{ transform:translateY(0) rotate(-14deg) scaleY(1); }
+  0%{   transform:translateY(-5px) rotate(12deg)  scaleY(.65); }
+  15%{  transform:translateY(-5px) rotate(12deg)  scaleY(.65); }
+  50%{  transform:translateY(0)    rotate(-14deg) scaleY(1); }
+  85%{  transform:translateY(-5px) rotate(12deg)  scaleY(.65); }
+  100%{ transform:translateY(-5px) rotate(12deg)  scaleY(.65); }
 }
 
 .gate__penguinBubble{

@@ -746,7 +746,7 @@ body{
 }
 .gate__penguinWrap{
   position:absolute; bottom:0; left:6%;
-  animation:penguinWalk 13s ease-in-out infinite;
+  animation:penguinWalk 26s ease-in-out infinite;
 }
 @keyframes penguinWalk{
   0%{   left:6%;  transform:scaleX(1)  translateY(0); }
@@ -767,8 +767,12 @@ body{
 }
 .gate__penguinBody{
   position:relative; width:100%; height:100%;
-  animation:penguinWaddle .38s ease-in-out infinite;
+  animation:penguinWaddle .72s ease-in-out infinite;
   transform-origin:50% 92%;
+}
+.gate__penguin.is-falling .gate__penguinBody,
+.gate__penguin.is-falling .gate__penguinFoot{
+  animation-play-state:paused;
 }
 @keyframes penguinWaddle{
   0%,100%{ transform:rotate(-7deg) translateY(0); }
@@ -797,8 +801,8 @@ body{
   position:absolute; bottom:-3px; width:9px; height:5px;
   background:#f4a626; border-radius:0 0 6px 6px; transform-origin:50% 0%;
 }
-.gate__penguinFoot--l{ left:6px; animation:footStepL .38s ease-in-out infinite; }
-.gate__penguinFoot--r{ left:18px; animation:footStepR .38s ease-in-out infinite; }
+.gate__penguinFoot--l{ left:6px; animation:footStepL .72s ease-in-out infinite; }
+.gate__penguinFoot--r{ left:18px; animation:footStepR .72s ease-in-out infinite; }
 @keyframes footStepL{
   0%,100%{ transform:translateY(0) rotate(-14deg) scaleY(1); }
   50%{ transform:translateY(-4px) rotate(10deg) scaleY(.7); }

@@ -663,83 +663,165 @@ body{
 }
 
 /* ============================================================
-   SECURITY / PASSWORD PHASE — a glassy "mirror" card that
-   shatters into pieces once the password is correct.
+   PASSCODE KEYPAD PHASE — heart-photo panel + numeric keypad,
+   matching the reference layout: photo card on the left,
+   "Enter a passcode" + 4 dots + number grid on the right.
    ============================================================ */
-.gate__mirror{
-  position:relative; width:100%;
-  background:linear-gradient(135deg, rgba(255,255,255,.16), rgba(255,255,255,.04));
-  border:1px solid rgba(255,255,255,.35);
-  border-radius:18px; padding:30px 22px;
-  box-shadow:0 8px 40px rgba(0,0,0,.35), inset 0 0 30px rgba(255,255,255,.06);
-  backdrop-filter:blur(6px);
-  overflow:hidden;
-  display:flex; flex-direction:column; align-items:center; gap:14px;
+.gate__phase--wide{ max-width:min(560px, 92vw); }
+.gate__keypadCard{
+  display:flex; flex-wrap:wrap; align-items:center; justify-content:center;
+  gap:22px; width:100%;
 }
-.gate__mirror > *{ transition:opacity .25s ease; position:relative; z-index:2; }
-.gate__shardLayer{
-  position:fixed; inset:0; pointer-events:none; z-index:1006; overflow:visible;
+.gate__heartPanel{ flex:0 0 auto; }
+.gate__heartFrame{
+  position:relative; width:min(180px, 40vw); aspect-ratio:1/0.92;
 }
-.gate__shard{
-  position:absolute;
-  border:1px solid rgba(255,255,255,.12);
-  transition:transform .8s cubic-bezier(.32,.02,.25,1), opacity .8s ease;
-  will-change:transform, opacity;
+.gate__heartScene{
+  position:absolute; inset:0;
+  clip-path:path('M90,28 C70,-6 15,-2 8,34 C2,64 45,88 90,112 C135,88 178,64 172,34 C165,-2 110,-6 90,28 Z');
+  background:linear-gradient(160deg, #ffe3ea 0%, #ffd0dc 55%, #ffc2d3 100%);
+  box-shadow:0 6px 22px rgba(157,15,66,.25);
 }
+.gate__heartPenguin{ position:absolute; left:50%; top:46%; width:56px; height:64px; transform:translate(-50%,-50%); }
+.gate__hpBody{
+  position:absolute; inset:6px 0 0 0; background:#3d4048;
+  border-radius:52% 52% 46% 46% / 58% 58% 44% 44%;
+}
+.gate__hpFace{
+  position:absolute; left:14%; top:30%; width:72%; height:64%;
+  background:#fff8f1; border-radius:50%;
+}
+.gate__hpEye{ position:absolute; top:44%; width:5px; height:5px; background:#221; border-radius:50%; }
+.gate__hpEye--l{ left:34%; } .gate__hpEye--r{ left:58%; }
+.gate__hpBeak{
+  position:absolute; top:55%; left:45%; width:0; height:0;
+  border-left:5px solid transparent; border-right:5px solid transparent;
+  border-top:6px solid #f4a626; transform:rotate(180deg);
+}
+.gate__hpFlower{
+  position:absolute; width:16px; height:16px; border-radius:50%;
+  background:radial-gradient(circle at 35% 35%, #ffd8e6, #f39ab9 70%);
+  bottom:14%;
+}
+.gate__hpFlower--1{ left:30%; }
+.gate__hpFlower--2{ left:46%; bottom:10%; }
+.gate__hpFlower--3{ left:62%; }
+.gate__heartBow{
+  position:absolute; right:6%; top:4%; width:30px; height:30px;
+  background:
+    radial-gradient(circle at 30% 50%, #e2314f 0 45%, transparent 46%),
+    radial-gradient(circle at 70% 50%, #e2314f 0 45%, transparent 46%);
+  filter:drop-shadow(0 2px 4px rgba(0,0,0,.25));
+}
+.gate__keypadPanel{
+  flex:0 0 auto; display:flex; flex-direction:column; align-items:center; gap:12px;
+}
+.gate__keypadTitle{
+  font-family:"Fraunces", Georgia, serif; font-weight:800;
+  font-size:clamp(17px,4vw,22px); color:#fff8f1; margin:0;
+}
+.gate__codeDots{ display:flex; gap:10px; }
+.gate__codeDot{
+  width:22px; height:22px; border-radius:6px;
+  border:2px solid rgba(247,231,220,.55); background:rgba(247,231,220,.08);
+  transition:background .15s ease, transform .15s ease;
+}
+.gate__codeDot.is-filled{ background:#e85a83; border-color:#e85a83; transform:scale(1.08); }
+.gate__keys{
+  display:grid; grid-template-columns:repeat(3, 1fr); gap:10px;
+}
+.gate__key{
+  width:clamp(48px,12vw,58px); height:clamp(48px,12vw,58px);
+  border-radius:50%; border:none; cursor:pointer;
+  background:rgba(247,231,220,.1); color:#fff8f1;
+  font-family:"Fraunces", Georgia, serif; font-weight:700;
+  font-size:clamp(17px,4vw,21px);
+  transition:background .15s ease, transform .1s ease;
+}
+.gate__key:hover{ background:rgba(247,231,220,.2); }
+.gate__key:active{ transform:scale(.9); }
 
 /* ============================================================
-   SECURITY PAGE DECORATIONS — balloons, hanging ribbon.
-   All pointer-events:none so they never block the password box.
+   WRONG PASSCODE — three penguins peek up one at a time, each
+   with its own "?", then a Try Again button.
    ============================================================ */
+.gate__wrongTitle{
+  font-family:"Fraunces", Georgia, serif; font-weight:900;
+  font-size:clamp(24px,6vw,34px); color:#2a2a2a; text-shadow:0 2px 0 #fff;
+  margin:0 0 6px; letter-spacing:.01em;
+}
+.gate__peekRow{ display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:18px; }
+.gate__peekWrap{ position:relative; width:70px; height:150px; }
+.gate__peekLine{ position:absolute; left:50%; top:0; bottom:0; width:2px; background:#222; transform:translateX(-50%); }
+.gate__peek{
+  position:absolute; left:50%; width:52px; height:50px;
+  transform:translate(-50%, 16px) scale(.5); opacity:0;
+  transition:transform .5s cubic-bezier(.34,1.56,.64,1), opacity .35s ease;
+}
+.gate__peek.is-in{ transform:translate(-50%, 0) scale(1); opacity:1; }
+.gate__peek--bottom{ bottom:0; }
+.gate__peek--mid{ bottom:48px; }
+.gate__peek--top{ bottom:96px; }
+.gate__peekPenguin{ position:relative; display:block; width:100%; height:100%; }
+.gate__peekPenguin::before{
+  content:''; position:absolute; inset:8px 4px 0 4px;
+  background:#3d4048; border-radius:50% 50% 46% 46% / 60% 60% 42% 42%;
+}
+.gate__peekPenguin::after{
+  content:''; position:absolute; left:24%; top:36%; width:52%; height:50%;
+  background:#fff8f1; border-radius:50%;
+}
+.gate__peekMarks{ display:flex; flex-direction:column; gap:26px; justify-content:center; height:150px; }
+.gate__peekMark{
+  font-family:"Fraunces", Georgia, serif; font-weight:900;
+  font-size:30px; color:#2a2a2a; opacity:0; transform:scale(.4);
+  transition:opacity .3s ease, transform .3s cubic-bezier(.34,1.56,.64,1);
+}
+.gate__peekMark.is-in{ opacity:1; transform:scale(1); }
+.gate__tryAgain{
+  font-family:"Fraunces", Georgia, serif; font-weight:800;
+  font-size:clamp(15px,3.6vw,18px); color:#fff;
+  background:#c41f3f; border:none; border-radius:999px;
+  padding:12px 30px; cursor:pointer; letter-spacing:.03em;
+  box-shadow:0 4px 14px rgba(196,31,63,.4);
+  transition:transform .12s ease;
+}
+.gate__tryAgain:active{ transform:scale(.95); }
 
-/* -- balloons: rise behind the box (lower z-index than mirror) -- */
-.gate__balloons{
-  position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:2;
+/* ============================================================
+   CLICK ON GIFT TO OPEN — correct passcode landing page
+   ============================================================ */
+.gate__giftTitle{
+  font-family:"Fraunces", Georgia, serif; font-weight:900;
+  font-size:clamp(22px,5.6vw,30px); color:#2a2a2a; text-shadow:0 2px 0 #fff;
+  margin:0 0 24px; letter-spacing:.01em;
 }
-.gate__balloon{
-  position:absolute; bottom:-140px; width:42px; height:52px;
-  border-radius:50% 50% 50% 50% / 60% 60% 42% 42%;
-  opacity:.92; filter:drop-shadow(0 4px 10px rgba(0,0,0,.22));
+.gate__giftPenguin{
+  position:relative; width:120px; height:130px; border:none; background:none;
+  cursor:pointer; padding:0; transition:transform .15s ease;
 }
-.gate__balloon::before{
-  content:''; position:absolute; left:24%; top:16%; width:26%; height:16%;
-  background:rgba(255,255,255,.4); border-radius:50%;
+.gate__giftPenguin:hover{ transform:scale(1.05); }
+.gate__giftPenguin:active{ transform:scale(.94); }
+.gate__gpBody{
+  position:absolute; inset:14px 0 0 0; background:#3d4048;
+  border-radius:52% 52% 46% 46% / 58% 58% 44% 44%;
 }
-.gate__balloon::after{
-  content:''; position:absolute; left:50%; top:100%; width:1px; height:34px;
-  background:rgba(255,255,255,.4); transform:translateX(-50%);
+.gate__gpFace{
+  position:absolute; left:12%; top:28%; width:76%; height:60%;
+  background:#fff8f1; border-radius:50%;
 }
-
-/* box must sit above the balloons */
-.gate__mirror{ z-index:5; }
-
-/* -- hanging "HAPPY BIRTHDAY" ribbon, sits above the box -- */
-.gate__ribbon{
-  position:fixed; top:3%; left:50%; transform:translateX(-50%);
-  z-index:6; display:flex; flex-direction:column; align-items:center; gap:clamp(6px,1.4vh,10px);
-  pointer-events:none;
+.gate__gpEye{ position:absolute; top:40%; width:9px; height:9px; background:#221; border-radius:50%; }
+.gate__gpEye--l{ left:30%; } .gate__gpEye--r{ left:60%; }
+.gate__gpBox{
+  position:absolute; left:50%; bottom:16%; width:46px; height:46px;
+  transform:translateX(-50%); background:#e6a4b8; border-radius:4px;
+  box-shadow:0 3px 8px rgba(0,0,0,.2);
 }
-.gate__ribbonWord{ display:flex; gap:clamp(3px,0.8vw,6px); }
-.gate__ribbonLetter{
-  position:relative; display:inline-flex; align-items:center; justify-content:center;
-  width:clamp(30px,7.2vw,46px); height:clamp(34px,8vw,52px); border-radius:7px; color:#fff;
-  font-family:"Fraunces", Georgia, serif; font-weight:800; font-size:clamp(16px,4.2vw,26px);
-  opacity:0; transform:translateY(-46px) rotate(var(--rot, 0deg));
-  animation:ribbonDrop .6s ease forwards;
-  animation-delay:calc(var(--i, 0) * 90ms);
-  box-shadow:0 3px 8px rgba(0,0,0,.25);
+.gate__gpRibbonV{
+  position:absolute; left:50%; bottom:16%; width:9px; height:46px;
+  transform:translateX(-50%); background:#8f5a72;
 }
-.gate__ribbonLetter::before{
-  content:''; position:absolute; left:50%; bottom:100%; width:1px; height:16px;
-  background:rgba(255,255,255,.55); transform:translateX(-50%);
-}
-@keyframes ribbonDrop{
-  0%{ opacity:0; transform:translateY(-46px) rotate(var(--rot, 0deg)); }
-  70%{ opacity:1; transform:translateY(4px) rotate(var(--rot, 0deg)); }
-  100%{ opacity:1; transform:translateY(0) rotate(var(--rot, 0deg)); }
-}
-
-
-@media (max-width:420px){
-  .gate__balloon{ width:32px; height:40px; }
+.gate__gpRibbonH{
+  position:absolute; left:50%; bottom:16%; width:46px; height:9px;
+  transform:translate(-50%, 18px); background:#8f5a72;
 }

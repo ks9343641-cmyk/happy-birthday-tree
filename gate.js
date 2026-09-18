@@ -6,17 +6,11 @@
    ✏️  EVERYTHING YOU MIGHT WANT TO EDIT IS RIGHT HERE AT THE TOP.
    ============================================================ */
 
-// --- 0) SECURITY PASSWORD -------------------------------------------
+// --- 0) PASSCODE -------------------------------------------------
 // Checked only in this file — never shown on screen. (Note: since this
 // runs in the browser, anyone who opens dev tools and reads the source
 // could technically find it — this is a fun lock, not real security.)
-const SECURITY_PASSWORD = "karttik.0007";
-const SECURITY_WRONG_TAUNTS = [
-  "nahi, wo sahi password nahi hai 🔒 phir try karo",
-  "galat! ek aur chance 😏",
-  "nope, dobara socho 🤔",
-  "aacha try tha, par nahi 😂",
-];
+const SECURITY_PASSCODE = "2007";
 
 // --- 1) THE QUIZ (Q1–Q3) ------------------------------------------
 // Each question has options + the 0-based index of the correct one.
@@ -176,15 +170,22 @@ function pickNoRepeat(key, pool) {
 }
 
 const gate = $('gate');
-const gateSecurity = $('gateSecurity');
-const gateMirror = $('gateMirror');
-const gateShardLayer = $('gateShardLayer');
-const gateSecurityInput = $('gateSecurityInput');
-const gateSecuritySubmit = $('gateSecuritySubmit');
-const gateSecurityFeedback = $('gateSecurityFeedback');
 
-const gateBalloons = $('gateBalloons');
-const gateRibbon = $('gateRibbon');
+const gateKeypad = $('gateKeypad');
+const gateCodeDots = $('gateCodeDots');
+const gateKeys = $('gateKeys');
+
+const gateWrongCode = $('gateWrongCode');
+const gatePeekBottom = $('gatePeekBottom');
+const gatePeekMid = $('gatePeekMid');
+const gatePeekTop = $('gatePeekTop');
+const gateMarkBottom = $('gateMarkBottom');
+const gateMarkMid = $('gateMarkMid');
+const gateMarkTop = $('gateMarkTop');
+const gateTryAgain = $('gateTryAgain');
+
+const gateGiftOpen = $('gateGiftOpen');
+const gateGiftPenguin = $('gateGiftPenguin');
 
 const gateLoading = $('gateLoading');
 const gatePage2 = $('gatePage2');
@@ -225,7 +226,7 @@ const secretModalClose = $('secretModalClose');
 const bgMusic = $('bgMusic');
 const muteBtn = $('muteBtn');
 
-const ALL_PHASES = [gateSecurity, gateLoading, gatePage2, gateThanks];
+const ALL_PHASES = [gateKeypad, gateWrongCode, gateGiftOpen, gateLoading, gatePage2, gateThanks];
 function showPhase(el) {
   ALL_PHASES.forEach((p) => { p.hidden = p !== el; });
 }
@@ -236,146 +237,63 @@ function shakePanel() {
   gatePanel.classList.add('shake');
 }
 
-function shakeMirror() {
-  gateMirror.classList.remove('shake');
-  void gateMirror.offsetWidth;
-  gateMirror.classList.add('shake');
+/* ---------- phase 0a: passcode keypad ---------------------------- */
+let enteredCode = '';
+
+function refreshDots() {
+  const dots = gateCodeDots.querySelectorAll('.gate__codeDot');
+  dots.forEach((d, i) => d.classList.toggle('is-filled', i < enteredCode.length));
 }
 
-/* ---------- security page decorations: balloons/ribbon ---------- */
-const DECOR_COLORS = ['#ff5f8f', '#ffb648', '#5fc9ff', '#ff8fd0', '#ffd25f', '#8fd7ff'];
-let balloonWaveTimer = null;
-
-function buildRibbon() {
-  if (!gateRibbon) return;
-  const words = ['HAPPY', 'BIRTHDAY'];
-  gateRibbon.innerHTML = '';
-  let idx = 0;
-  words.forEach((word) => {
-    const wordWrap = document.createElement('div');
-    wordWrap.className = 'gate__ribbonWord';
-    [...word].forEach((ch) => {
-      const el = document.createElement('span');
-      el.className = 'gate__ribbonLetter';
-      el.textContent = ch;
-      el.style.setProperty('--i', idx);
-      el.style.setProperty('--rot', (idx % 2 === 0 ? -4 : 3) + 'deg');
-      el.style.background = DECOR_COLORS[idx % DECOR_COLORS.length];
-      wordWrap.appendChild(el);
-      idx++;
-    });
-    gateRibbon.appendChild(wordWrap);
-  });
+function resetKeypad() {
+  enteredCode = '';
+  refreshDots();
 }
 
-function spawnBalloon(zone) {
-  if (!gateBalloons) return;
-  const b = document.createElement('div');
-  b.className = 'gate__balloon';
-  b.style.background = pick(DECOR_COLORS);
-  let leftPct;
-  if (zone === 'left') leftPct = -4 + Math.random() * 16;
-  else if (zone === 'right') leftPct = 88 + Math.random() * 16;
-  else leftPct = 40 + Math.random() * 20; // rises up right behind the box
-  b.style.left = leftPct + '%';
-  const dur = 8 + Math.random() * 5;
-  const drift = (Math.random() - 0.5) * 120;
-  gateBalloons.appendChild(b);
-  requestAnimationFrame(() => {
-    b.style.transition = `transform ${dur}s linear, opacity 1.2s ease ${dur - 1.2}s`;
-    b.style.transform = `translate(${drift}px, -135vh)`;
-    b.style.opacity = '0';
-  });
-  setTimeout(() => { b.remove(); }, (dur + 0.5) * 1000);
-}
+gateKeys?.addEventListener('click', (e) => {
+  const btn = e.target.closest('.gate__key');
+  if (!btn) return;
+  const key = btn.dataset.key;
 
-function runBalloonLoop() {
-  const pattern = [4, 3, 5, 3, 4];
-  let p = 0;
-  const zones = ['left', 'right', 'center'];
-  function wave() {
-    const count = pattern[p % pattern.length];
-    p++;
-    for (let i = 0; i < count; i++) {
-      const zone = pick(zones);
-      setTimeout(() => spawnBalloon(zone), i * 150);
-    }
-    balloonWaveTimer = setTimeout(wave, 1300 + Math.random() * 600);
-  }
-  wave();
-}
+  if (key === '*') { resetKeypad(); return; }
+  if (key === '#') { if (enteredCode.length === 4) checkPasscode(); return; }
+  if (enteredCode.length >= 4) return;
 
-function stopSecurityDecorations() {
-  if (balloonWaveTimer) clearTimeout(balloonWaveTimer);
-  if (gateBalloons) gateBalloons.innerHTML = '';
-}
-
-/* ---------- phase 0: security / password ------------------------ */
-function checkSecurityPassword() {
-  const val = (gateSecurityInput.value || '').trim();
-  if (val === SECURITY_PASSWORD) {
-    gateSecurityFeedback.textContent = '';
-    shatterMirror();
-  } else {
-    gateSecurityFeedback.textContent = pickNoRepeat('security', SECURITY_WRONG_TAUNTS);
-    shakeMirror();
-  }
-}
-gateSecuritySubmit?.addEventListener('click', checkSecurityPassword);
-gateSecurityInput?.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') checkSecurityPassword();
+  enteredCode += key;
+  refreshDots();
+  if (enteredCode.length === 4) setTimeout(checkPasscode, 200);
 });
 
-function shatterMirror() {
-  stopSecurityDecorations();
-
-  // fade the real content out first so it doesn't linger behind the shards
-  [...gateMirror.children].forEach((child) => {
-    if (child !== gateShardLayer) child.style.opacity = '0';
-  });
-
-  // the whole screen breaks apart, not just the little card — tile the
-  // full viewport with pieces that share one continuous background so
-  // they line up perfectly before flying apart.
-  const w = window.innerWidth, h = window.innerHeight;
-  const cols = 7, rows = 9;
-  const cw = w / cols, ch = h / rows;
-  const gateBg = 'radial-gradient(120% 120% at 50% 20%, #2a1420 0%, #150910 60%, #0c060a 100%)';
-  gateShardLayer.innerHTML = '';
-
-  const shards = [];
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      const shard = document.createElement('div');
-      shard.className = 'gate__shard';
-      shard.style.left = (c * cw) + 'px';
-      shard.style.top = (r * ch) + 'px';
-      shard.style.width = cw + 'px';
-      shard.style.height = ch + 'px';
-      // background-attachment:fixed keeps the gradient anchored to the
-      // viewport, so every tile shows the exact slice it should — the
-      // pieces read as one broken image, not a repeated pattern.
-      shard.style.backgroundImage = gateBg;
-      shard.style.backgroundAttachment = 'fixed';
-      gateShardLayer.appendChild(shard);
-      shards.push(shard);
-    }
+function checkPasscode() {
+  if (enteredCode === SECURITY_PASSCODE) {
+    resetKeypad();
+    showPhase(gateGiftOpen);
+  } else {
+    resetKeypad();
+    showWrongCode();
   }
-  void gateShardLayer.offsetWidth; // reflow so transitions actually animate
-
-  shards.forEach((shard) => {
-    const dx = (Math.random() - 0.5) * 1100;
-    const dy = (Math.random() - 0.15) * 1100;
-    const rot = (Math.random() - 0.5) * 720;
-    shard.style.transform = `translate(${dx}px, ${dy}px) rotate(${rot}deg)`;
-    shard.style.opacity = '0';
-  });
-
-  setTimeout(() => {
-    showPhase(gateLoading);
-    runLoadingPrank();
-  }, 850);
 }
+
+/* ---------- phase 0b: wrong passcode — penguins peek in ---------- */
+function showWrongCode() {
+  showPhase(gateWrongCode);
+  [gatePeekBottom, gatePeekMid, gatePeekTop, gateMarkBottom, gateMarkMid, gateMarkTop]
+    .forEach((el) => el.classList.remove('is-in'));
+
+  setTimeout(() => { gatePeekBottom.classList.add('is-in'); gateMarkBottom.classList.add('is-in'); }, 150);
+  setTimeout(() => { gatePeekMid.classList.add('is-in'); gateMarkMid.classList.add('is-in'); }, 650);
+  setTimeout(() => { gatePeekTop.classList.add('is-in'); gateMarkTop.classList.add('is-in'); }, 1150);
+}
+
+gateTryAgain?.addEventListener('click', () => {
+  showPhase(gateKeypad);
+});
+
+/* ---------- phase 0c: click gift to open -------------------------- */
+gateGiftPenguin?.addEventListener('click', () => {
+  showPhase(gateLoading);
+  runLoadingPrank();
+});
 
 /* ---------- phase 1: big loader + live percentage --------------- */
 function runLoadingPrank() {
@@ -629,8 +547,6 @@ muteBtn?.addEventListener('click', () => {
   muteBtn.textContent = bgMusic.muted ? '🔇' : '🔊';
 });
 
-/* ---------- go: start on the security phase ---------------------- */
+/* ---------- go: start on the passcode keypad ---------------------- */
 document.body.style.overflow = 'hidden';
-buildRibbon();
-runBalloonLoop();
-showPhase(gateSecurity);
+showPhase(gateKeypad);

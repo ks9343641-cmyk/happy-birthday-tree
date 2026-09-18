@@ -26,20 +26,89 @@
   <div class="gate" id="gate" role="dialog" aria-modal="true" aria-label="One moment">
     <div class="gate__panel" id="gatePanel">
 
-      <!-- phase 0: security / password gate -->
-      <div class="gate__phase" id="gateSecurity">
-        <div class="gate__balloons" id="gateBalloons" aria-hidden="true"></div>
-
-        <div class="gate__ribbon" id="gateRibbon" aria-hidden="true"></div>
-
-        <div class="gate__mirror" id="gateMirror">
-          <p class="gate__msg">Enter karne se pehle aapko password dalna padega access lene ke liye 🔒</p>
-          <input class="gate__nameInput" id="gateSecurityInput" type="password" autocomplete="off"
-                 placeholder="password" aria-label="Password" />
-          <button class="gate__opt gate__nameSubmit" id="gateSecuritySubmit" type="button">Unlock</button>
-          <p class="gate__feedback" id="gateSecurityFeedback" aria-live="polite"></p>
-          <div class="gate__shardLayer" id="gateShardLayer" aria-hidden="true"></div>
+      <!-- phase 0a: numeric passcode keypad -->
+      <div class="gate__phase gate__phase--wide" id="gateKeypad">
+        <div class="gate__keypadCard">
+          <div class="gate__heartPanel">
+            <div class="gate__heartFrame">
+              <div class="gate__heartScene">
+                <div class="gate__heartPenguin">
+                  <span class="gate__hpBody"></span>
+                  <span class="gate__hpFace"></span>
+                  <span class="gate__hpEye gate__hpEye--l"></span>
+                  <span class="gate__hpEye gate__hpEye--r"></span>
+                  <span class="gate__hpBeak"></span>
+                </div>
+                <div class="gate__hpFlower gate__hpFlower--1"></div>
+                <div class="gate__hpFlower gate__hpFlower--2"></div>
+                <div class="gate__hpFlower gate__hpFlower--3"></div>
+              </div>
+              <div class="gate__heartBow"></div>
+            </div>
+          </div>
+          <div class="gate__keypadPanel">
+            <p class="gate__keypadTitle">Enter a passcode</p>
+            <div class="gate__codeDots" id="gateCodeDots">
+              <span class="gate__codeDot"></span>
+              <span class="gate__codeDot"></span>
+              <span class="gate__codeDot"></span>
+              <span class="gate__codeDot"></span>
+            </div>
+            <div class="gate__keys" id="gateKeys">
+              <button class="gate__key" data-key="1" type="button">1</button>
+              <button class="gate__key" data-key="2" type="button">2</button>
+              <button class="gate__key" data-key="3" type="button">3</button>
+              <button class="gate__key" data-key="4" type="button">4</button>
+              <button class="gate__key" data-key="5" type="button">5</button>
+              <button class="gate__key" data-key="6" type="button">6</button>
+              <button class="gate__key" data-key="7" type="button">7</button>
+              <button class="gate__key" data-key="8" type="button">8</button>
+              <button class="gate__key" data-key="9" type="button">9</button>
+              <button class="gate__key" data-key="*" type="button">*</button>
+              <button class="gate__key" data-key="0" type="button">0</button>
+              <button class="gate__key" data-key="#" type="button">#</button>
+            </div>
+          </div>
         </div>
+      </div>
+
+      <!-- phase 0b: wrong passcode — three penguins peek in one at a time -->
+      <div class="gate__phase" id="gateWrongCode" hidden>
+        <p class="gate__wrongTitle">WRONG PASSCODE</p>
+        <div class="gate__peekRow">
+          <div class="gate__peekWrap">
+            <span class="gate__peekLine"></span>
+            <div class="gate__peek gate__peek--bottom" id="gatePeekBottom">
+              <span class="gate__peekPenguin"></span>
+            </div>
+            <div class="gate__peek gate__peek--mid" id="gatePeekMid">
+              <span class="gate__peekPenguin"></span>
+            </div>
+            <div class="gate__peek gate__peek--top" id="gatePeekTop">
+              <span class="gate__peekPenguin"></span>
+            </div>
+          </div>
+          <div class="gate__peekMarks">
+            <span class="gate__peekMark" id="gateMarkBottom">?</span>
+            <span class="gate__peekMark" id="gateMarkMid">?</span>
+            <span class="gate__peekMark" id="gateMarkTop">?</span>
+          </div>
+        </div>
+        <button class="gate__tryAgain" id="gateTryAgain" type="button">Try Again</button>
+      </div>
+
+      <!-- phase 0c: correct passcode — click the gift to open -->
+      <div class="gate__phase" id="gateGiftOpen" hidden>
+        <p class="gate__giftTitle">CLICK ON GIFT TO OPEN</p>
+        <button class="gate__giftPenguin" id="gateGiftPenguin" type="button" aria-label="Click on gift to open">
+          <span class="gate__gpBody"></span>
+          <span class="gate__gpFace"></span>
+          <span class="gate__gpEye gate__gpEye--l"></span>
+          <span class="gate__gpEye gate__gpEye--r"></span>
+          <span class="gate__gpBox"></span>
+          <span class="gate__gpRibbonV"></span>
+          <span class="gate__gpRibbonH"></span>
+        </button>
       </div>
 
       <!-- phase 1: big loader + live percentage -->
